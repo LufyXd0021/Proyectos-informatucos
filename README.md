@@ -24,4 +24,4 @@ En **Configuración → Avisos por correo** puedes guardar una dirección y eleg
 
 ## Publicación
 
-El flujo de GitHub Pages publica la versión estática al actualizar la rama de trabajo `arena/01a10a39-proyectos-informatucos`. El repositorio es público; cuando termine correctamente la primera ejecución, la página quedará disponible en `https://lufyxd0021.github.io/Proyectos-informatucos/`.
+El sitio público de GitHub Pages es `https://lufyxd0021.github.io/Proyectos-informatucos/`. El flujo de despliegue publica la versión estática al actualizar la rama de trabajo `arena/01a10a39-proyectos-informatucos`.
