@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f4">
+  <meta name="description" content="Organiza compras, retiros y transferencias en un solo lugar.">
+  <title>saldo — Tu dinero, en orden</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+      <a class="brand" href="#inicio" data-view="overview" aria-label="saldo, inicio">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M5.5 10.25A3.25 3.25 0 0 1 8.75 7H25v18H8.75a3.25 3.25 0 0 1-3.25-3.25v-11.5Z" fill="currentColor"/><path d="M5.5 12.5h16.25A3.25 3.25 0 0 1 25 15.75v3.5H8.75A3.25 3.25 0 0 1 5.5 16v-3.5Z" fill="#DDF2E8"/><circle cx="20.5" cy="16" r="1.5" fill="#155D49"/></svg>
+        </span>
+        <span class="brand-name">saldo<span>.</span></span>
+      </a>
+
+      <button class="account-switcher" type="button" id="accountSwitcher" aria-label="Cuenta personal">
+        <span class="account-avatar">CP</span>
+        <span class="account-switcher-copy"><strong>Cuenta personal</strong><small>Cuenta principal</small></span>
+        <svg class="chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg>
+      </button>
+
+      <nav class="nav-list">
+        <p class="nav-caption">MENÚ PRINCIPAL</p>
+        <a class="nav-link is-active" href="#inicio" data-view="overview">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3.5 10.5 8.5-7 8.5 7v9a1 1 0 0 1-1 1h-5.25v-6h-4.5v6H4.5a1 1 0 0 1-1-1v-9Z"/></svg>
+          <span>Resumen</span>
+        </a>
+        <a class="nav-link" href="#movimientos" data-view="transactions">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h10"/><circle cx="18" cy="17.5" r="2.5"/></svg>
+          <span>Movimientos</span>
+        </a>
+        <a class="nav-link" href="#mensajes" data-view="sms">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5c-1.26 0-2.45-.31-3.49-.86L4 19l.9-4.16A7.48 7.48 0 0 1 5 7.98 7.5 7.5 0 0 1 20 11.5Z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/></svg>
+          <span>Mensajes SMS</span>
+          <span class="nav-new">NUEVO</span>
+        </a>
+
+        <p class="nav-caption nav-caption-spaced">PREFERENCIAS</p>
+        <a class="nav-link" href="#ajustes" data-view="settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.1.9-1.6 2.8-1.4-.6a7.8 7.8 0 0 1-1.4.8l-.2 1.5h-3.2l-.2-1.5a7.8 7.8 0 0 1-1.4-.8l-1.4.6-1.6-2.8 1.1-.9a7.8 7.8 0 0 1 0-1.6l-1.1-.9 1.6-2.8 1.4.6a7.8 7.8 0 0 1 1.4-.8l.2-1.5h3.2l.2 1.5a7.8 7.8 0 0 1 1.4.8l1.4-.6 1.6 2.8-1.1.9a7.8 7.8 0 0 1-.1 1.6Z" transform="translate(-1 -1)"/></svg>
+          <span>Configuración</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="connection-card">
+          <div class="connection-card-label"><span class="connection-dot"></span> INTEGRACIÓN SMS</div>
+          <strong>Sin conectar</strong>
+          <p>Importa tus mensajes mientras conectas una fuente compatible.</p>
+          <button class="text-button" id="connectSms" type="button">Más información <span aria-hidden="true">→</span></button>
+        </div>
+        <div class="sidebar-profile">
+          <span class="profile-avatar">CP</span>
+          <span class="profile-copy"><strong>Cuenta personal</strong><small>Espacio personal</small></span>
+          <button class="quiet-icon-button" id="profileMenu" type="button" aria-label="Opciones de perfil">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4" cy="10" r="1"/><circle cx="10" cy="10" r="1"/><circle cx="16" cy="10" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-scrim" id="sidebarScrim"></div>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu icon-button" id="mobileMenu" type="button" aria-label="Abrir menú">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="breadcrumb"><span>Mi espacio</span><span class="breadcrumb-slash">/</span><strong id="breadcrumbCurrent">Resumen</strong></div>
+        </div>
+        <div class="topbar-actions">
+          <label class="global-search" for="globalSearch">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.2 4.2"/></svg>
+            <input id="globalSearch" type="search" placeholder="Buscar movimientos" autocomplete="off">
+            <kbd>/</kbd>
+          </label>
+          <button class="icon-button notification-button" id="helpButton" type="button" aria-label="Ayuda sobre la conexión SMS">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17.5h.01M9.1 9a3 3 0 1 1 5.2 2c-1.2 1.1-2.3 1.6-2.3 3.1"/><circle cx="12" cy="12" r="9"/></svg>
+          </button>
+          <button class="top-profile" type="button" data-view="settings" aria-label="Abrir configuración"><span class="profile-avatar">CP</span><span class="top-profile-name">Cuenta</span><svg class="chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button>
+        </div>
+      </header>
+
+      <section class="view is-visible" data-view-panel="overview" aria-labelledby="overviewTitle">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow" id="todayLabel">TU RESUMEN FINANCIERO</p>
+            <h1 id="overviewTitle">Tu dinero, en orden.</h1>
+            <p class="page-subtitle">Revisa tus cuentas y mantén tus movimientos al día.</p>
+          </div>
+          <div class="heading-actions">
+            <button class="button button-secondary" type="button" data-action="import-sms">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5c-1.26 0-2.45-.31-3.49-.86L4 19l.9-4.16A7.48 7.48 0 0 1 5 7.98 7.5 7.5 0 0 1 20 11.5Z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/></svg>
+              Importar SMS
+            </button>
+            <button class="button button-primary" type="button" data-action="add-transaction">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              Nuevo movimiento
+            </button>
+          </div>
+        </div>
+
+        <div class="demo-notice" id="demoNotice">
+          <span class="notice-icon" aria-hidden="true">i</span>
+          <p><strong>Vista de demostración.</strong> El balance inicial y los movimientos son ejemplos; todavía no hay una conexión bancaria.</p>
+          <button class="notice-action" id="clearDemoData" type="button">Usar mis datos <span aria-hidden="true">→</span></button>
+        </div>
+
+        <div class="feature-grid">
+          <article class="balance-card">
+            <div class="balance-decoration balance-decoration-one"></div>
+            <div class="balance-decoration balance-decoration-two"></div>
+            <div class="balance-card-top">
+              <div>
+                <div class="balance-label">BALANCE DISPONIBLE <span class="balance-live"><span></span> CALCULADO</span></div>
+                <div class="balance-value-row">
+                  <h2 id="balanceValue">—</h2>
+                  <button class="balance-visibility" id="toggleBalance" type="button" aria-label="Ocultar balance" title="Ocultar balance">
+                    <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+                  </button>
+                </div>
+                <div class="account-meta"><span class="account-meta-icon"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="M2.5 8h15M6 12h3"/></svg></span> Cuenta principal <span class="account-dots">•••• 2048</span><span class="meta-divider">·</span><span id="currencyLabel">USD</span></div>
+              </div>
+              <span class="balance-card-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M5.5 10.25A3.25 3.25 0 0 1 8.75 7H25v18H8.75a3.25 3.25 0 0 1-3.25-3.25v-11.5Z" fill="currentColor"/><path d="M5.5 12.5h16.25A3.25 3.25 0 0 1 25 15.75v3.5H8.75A3.25 3.25 0 0 1 5.5 16v-3.5Z" fill="#DDF2E8"/><circle cx="20.5" cy="16" r="1.5" fill="#155D49"/></svg></span>
+            </div>
+            <div class="balance-card-bottom">
+              <div class="balance-foot-item">
+                <span><span class="trend-icon trend-in">↗</span> Ingresos este mes</span>
+                <strong id="balanceIncome">—</strong>
+              </div>
+              <div class="balance-foot-divider"></div>
+              <div class="balance-foot-item">
+                <span><span class="trend-icon trend-out">↗</span> Gastos este mes</span>
+                <strong id="balanceExpenses">—</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="sms-prompt-card">
+            <div class="sms-card-heading">
+              <span class="sms-icon-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5c-1.26 0-2.45-.31-3.49-.86L4 19l.9-4.16A7.48 7.48 0 0 1 5 7.98 7.5 7.5 0 0 1 20 11.5Z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/></svg></span>
+              <span class="status-chip"><span></span> Sin conectar</span>
+            </div>
+            <p class="sms-overline">AVISOS DE TU BANCO</p>
+            <h2>¿Te llegó un SMS de compra o retiro?</h2>
+            <p class="sms-description">Pega el mensaje y registraremos automáticamente el tipo y el monto en tus movimientos.</p>
+            <button class="button button-light" type="button" data-action="import-sms">Pegar mensaje SMS <span aria-hidden="true">→</span></button>
+            <p class="sms-footnote"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 16 5v4.4c0 3.7-2.5 6.5-6 8.1-3.5-1.6-6-4.4-6-8.1V5l6-2.5Z"/><path d="m7.4 9.8 1.7 1.7 3.6-3.7"/></svg> La conexión automática requiere integrar un servicio compatible.</p>
+          </article>
+        </div>
+
+        <div class="metric-grid" aria-label="Resumen del mes">
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-icon metric-icon-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6.5 10.5 12 5l5.5 5.5"/></svg></span><span class="metric-caption">ESTE MES</span></div>
+            <p>Ingresos</p><strong id="metricIncome">—</strong><span class="metric-note positive-note"><span>↗</span> Total recibido</span>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-icon metric-icon-coral"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6.5 13.5 12 19l5.5-5.5"/></svg></span><span class="metric-caption">ESTE MES</span></div>
+            <p>Gastos</p><strong id="metricExpenses">—</strong><span class="metric-note neutral-note">Compras, retiros y transferencias</span>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-icon metric-icon-lilac"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v13H5zM8 9h8M8 12h5M8 15h3"/></svg></span><span class="metric-caption">ESTE MES</span></div>
+            <p>Movimientos</p><strong id="metricTransactions">—</strong><span class="metric-note neutral-note">Registros en tu actividad</span>
+          </article>
+        </div>
+
+        <div class="analytics-grid">
+          <article class="panel chart-panel">
+            <div class="panel-heading">
+              <div><p class="panel-kicker">ACTIVIDAD</p><h2>Ingresos y gastos</h2></div>
+              <button class="period-select" type="button" aria-label="Período de 7 días">Últimos 7 días <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button>
+            </div>
+            <div class="chart-summary"><strong id="chartTotal">—</strong><span>movimiento neto · 7 días</span></div>
+            <div class="chart-wrap" id="weeklyChart" aria-label="Gráfico de ingresos y gastos de los últimos siete días"></div>
+            <div class="chart-legend"><span><i class="legend-income"></i>Ingresos</span><span><i class="legend-expense"></i>Gastos</span></div>
+          </article>
+          <article class="panel category-panel">
+            <div class="panel-heading">
+              <div><p class="panel-kicker">TUS HÁBITOS</p><h2>En qué gastas</h2></div>
+              <span class="panel-period">Este mes</span>
+            </div>
+            <div class="category-content" id="categoryContent"></div>
+          </article>
+        </div>
+
+        <article class="panel transactions-panel">
+          <div class="panel-heading transactions-heading">
+            <div><p class="panel-kicker">TU ACTIVIDAD</p><h2>Movimientos recientes</h2></div>
+            <button class="text-button all-transactions-link" type="button" data-view="transactions">Ver todos <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="table-scroll">
+            <table class="transaction-table">
+              <thead><tr><th scope="col">MOVIMIENTO</th><th scope="col">TIPO</th><th scope="col">FECHA</th><th scope="col">ORIGEN</th><th scope="col" class="amount-heading">MONTO</th></tr></thead>
+              <tbody id="recentTransactionRows"></tbody>
+            </table>
+          </div>
+          <div class="empty-state hidden" id="recentEmpty"><span class="empty-icon">↗</span><strong>Aún no hay movimientos</strong><p>Agrega un registro o importa el texto de un SMS para comenzar.</p><button class="button button-primary" type="button" data-action="add-transaction">Agregar movimiento</button></div>
+        </article>
+      </section>
+
+      <section class="view" data-view-panel="transactions" aria-labelledby="transactionsTitle" hidden>
+        <div class="page-heading">
+          <div><p class="eyebrow">TU HISTORIAL FINANCIERO</p><h1 id="transactionsTitle">Todos tus movimientos</h1><p class="page-subtitle">Compras, retiros, transferencias e ingresos en un solo lugar.</p></div>
+          <div class="heading-actions"><button class="button button-secondary" type="button" data-action="import-sms"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5c-1.26 0-2.45-.31-3.49-.86L4 19l.9-4.16A7.48 7.48 0 0 1 5 7.98 7.5 7.5 0 0 1 20 11.5Z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/></svg>Importar SMS</button><button class="button button-primary" type="button" data-action="add-transaction"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuevo movimiento</button></div>
+        </div>
+        <div class="transaction-overview-strip">
+          <div><span>Balance actual</span><strong id="transactionsBalance">—</strong></div>
+          <div><span>Ingresos registrados</span><strong id="transactionsIncome">—</strong></div>
+          <div><span>Gastos registrados</span><strong id="transactionsExpenses">—</strong></div>
+        </div>
+        <article class="panel all-transactions-panel">
+          <div class="list-toolbar">
+            <div class="filter-tabs" role="tablist" aria-label="Filtrar movimientos">
+              <button class="filter-tab is-active" type="button" data-filter="all" role="tab" aria-selected="true">Todos <span id="allCount">0</span></button>
+              <button class="filter-tab" type="button" data-filter="purchase" role="tab" aria-selected="false">Compras</button>
+              <button class="filter-tab" type="button" data-filter="withdrawal" role="tab" aria-selected="false">Retiros</button>
+              <button class="filter-tab" type="button" data-filter="transfer" role="tab" aria-selected="false">Transferencias</button>
+              <button class="filter-tab" type="button" data-filter="income" role="tab" aria-selected="false">Ingresos</button>
+            </div>
+            <label class="list-search" for="transactionSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.2 4.2"/></svg><input id="transactionSearch" type="search" placeholder="Buscar por nombre"></label>
+          </div>
+          <div class="table-scroll">
+            <table class="transaction-table all-transaction-table">
+              <thead><tr><th scope="col">MOVIMIENTO</th><th scope="col">TIPO</th><th scope="col">FECHA</th><th scope="col">ORIGEN</th><th scope="col" class="amount-heading">MONTO</th></tr></thead>
+              <tbody id="allTransactionRows"></tbody>
+            </table>
+          </div>
+          <div class="empty-state hidden" id="allEmpty"><span class="empty-icon">⌕</span><strong>No encontramos movimientos</strong><p>Prueba con otro término o cambia el filtro.</p></div>
+        </article>
+      </section>
+
+      <section class="view" data-view-panel="sms" aria-labelledby="smsTitle" hidden>
+        <div class="page-heading">
+          <div><p class="eyebrow">LECTURA DE NOTIFICACIONES</p><h1 id="smsTitle">Mensajes de tu banco</h1><p class="page-subtitle">Convierte los avisos de compras, retiros y transferencias en registros.</p></div>
+          <div class="heading-actions"><button class="button button-primary" type="button" data-action="import-sms"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5c-1.26 0-2.45-.31-3.49-.86L4 19l.9-4.16A7.48 7.48 0 0 1 5 7.98 7.5 7.5 0 0 1 20 11.5Z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/></svg>Importar mensaje</button></div>
+        </div>
+        <div class="sms-explainer">
+          <span class="sms-explainer-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.6-3.4 8.1-8 9.8-4.6-1.7-8-5.2-8-9.8V6l8-3Z"/><path d="m8.7 12 2.1 2.1 4.6-4.7"/></svg></span>
+          <div><span class="status-chip status-chip-wide"><span></span> Importación manual disponible</span><h2>Tu privacidad es lo primero.</h2><p>Esta página no puede leer los SMS de tu teléfono ni conectarse a tu banco por sí sola. Puedes pegar aquí el texto de una notificación; la conexión automática requiere una app o proveedor compatible y un backend seguro.</p></div>
+          <button class="text-button" id="smsLearnMore" type="button">Cómo funciona <span aria-hidden="true">→</span></button>
+        </div>
+        <div class="sms-page-grid">
+          <article class="panel sms-history-panel">
+            <div class="panel-heading"><div><p class="panel-kicker">BANDEJA IMPORTADA</p><h2>Mensajes procesados</h2></div><span class="count-pill" id="smsHistoryCount">0</span></div>
+            <div class="sms-history-list" id="smsHistoryList"></div>
+          </article>
+          <article class="panel sms-howto-panel">
+            <p class="panel-kicker">GUÍA RÁPIDA</p><h2>¿Qué mensajes reconoce?</h2><p>saldo detecta palabras clave y cantidades para sugerir el tipo de movimiento. Revisa el registro antes de continuar.</p>
+            <div class="recognized-list">
+              <div><span class="recognized-icon purchase-recognized">↗</span><span><strong>Compras</strong><small>“Compra aprobada por $25.90 en…”</small></span></div>
+              <div><span class="recognized-icon withdrawal-recognized">↓</span><span><strong>Retiros</strong><small>“Retiraste $80.00 del cajero…”</small></span></div>
+              <div><span class="recognized-icon transfer-recognized">⇄</span><span><strong>Transferencias</strong><small>“Transferiste $100.00 a…”</small></span></div>
+              <div><span class="recognized-icon income-recognized">↑</span><span><strong>Ingresos</strong><small>“Recibiste un depósito de $500.00…”</small></span></div>
+            </div>
+            <button class="button button-secondary button-full" type="button" data-action="import-sms">Probar con un mensaje <span aria-hidden="true">→</span></button>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" data-view-panel="settings" aria-labelledby="settingsTitle" hidden>
+        <div class="page-heading">
+          <div><p class="eyebrow">TU ESPACIO PERSONAL</p><h1 id="settingsTitle">Configuración</h1><p class="page-subtitle">Ajusta el saldo, la moneda y tus preferencias de alertas por correo.</p></div>
+        </div>
+        <div class="settings-grid">
+          <article class="panel settings-panel">
+            <div class="panel-heading"><div><p class="panel-kicker">PREFERENCIAS DE CUENTA</p><h2>Balance y moneda</h2></div></div>
+            <form id="settingsForm" class="settings-form">
+              <label class="field-label" for="openingBalanceInput">Saldo inicial <span>¿Con cuánto empiezas?</span></label>
+              <div class="money-input"><span id="settingsCurrencyMark">$</span><input id="openingBalanceInput" name="openingBalance" type="number" min="0" step="0.01" inputmode="decimal" required></div>
+              <p class="field-help">Este saldo se ajusta con cada ingreso, compra, retiro o transferencia registrada.</p>
+              <label class="field-label" for="currencySelect">Moneda principal</label>
+              <select id="currencySelect" name="currency" class="form-control">
+                <option value="USD">USD — Dólar estadounidense</option>
+                <option value="MXN">MXN — Peso mexicano</option>
+                <option value="COP">COP — Peso colombiano</option>
+                <option value="DOP">DOP — Peso dominicano</option>
+                <option value="EUR">EUR — Euro</option>
+                <option value="ARS">ARS — Peso argentino</option>
+                <option value="CLP">CLP — Peso chileno</option>
+              </select>
+              <p class="field-help">La moneda cambia el formato de los importes; no convierte ni consulta tipos de cambio.</p>
+              <div class="settings-actions"><button class="button button-primary" type="submit">Guardar cambios</button><span id="settingsSaved" class="saved-note" aria-live="polite"></span></div>
+            </form>
+          </article>
+          <article class="panel security-panel">
+            <span class="security-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.6-3.4 8.1-8 9.8-4.6-1.7-8-5.2-8-9.8V6l8-3Z"/><path d="m8.7 12 2.1 2.1 4.6-4.7"/></svg></span>
+            <p class="panel-kicker">CONEXIÓN BANCARIA</p><h2>Por ahora, tus datos se quedan aquí.</h2><p>Los movimientos que agregues se guardan en este navegador. Recibir SMS automáticamente o enviar correos requiere servicios conectados mediante un backend seguro; nunca compartas claves o códigos de seguridad en esta página.</p>
+            <button class="text-button" type="button" id="settingsIntegration">Ver detalles de integración <span aria-hidden="true">→</span></button>
+          </article>
+          <article class="panel email-alert-panel">
+            <div class="email-alert-heading">
+              <span class="email-alert-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span>
+              <div class="email-alert-title"><p class="panel-kicker">NOTIFICACIONES</p><h2>Avisos por correo</h2><p>Guarda tus preferencias para recibir un aviso cuando registres movimientos.</p></div>
+              <span class="email-connection-status"><i></i> Envío sin conectar</span>
+            </div>
+            <form id="emailSettingsForm" class="email-settings-form">
+              <div class="email-form-top">
+                <label class="form-field email-address-field" for="notificationEmail"><span class="field-label">Correo de destino</span><input id="notificationEmail" name="email" type="email" autocomplete="email" placeholder="tu-correo@ejemplo.com"></label>
+                <label class="email-toggle" for="emailAlertsEnabled"><input id="emailAlertsEnabled" name="enabled" type="checkbox"><span class="email-toggle-track" aria-hidden="true"></span><span class="email-toggle-copy"><strong>Activar alertas</strong><small>Preferencia guardada en este navegador</small></span></label>
+              </div>
+              <fieldset class="email-types-fieldset">
+                <legend>Quiero recibir avisos por</legend>
+                <div class="email-type-options">
+                  <label><input type="checkbox" name="emailType" value="purchase" checked><span>Compras</span></label>
+                  <label><input type="checkbox" name="emailType" value="withdrawal" checked><span>Retiros</span></label>
+                  <label><input type="checkbox" name="emailType" value="transfer" checked><span>Transferencias</span></label>
+                  <label><input type="checkbox" name="emailType" value="income" checked><span>Ingresos</span></label>
+                </div>
+              </fieldset>
+              <div class="email-alert-footer">
+                <p id="emailAlertStatus" class="email-alert-status" aria-live="polite">El prototipo todavía no envía correos. Se necesita conectar un proveedor seguro.</p>
+                <div class="email-alert-actions"><button class="text-button" id="emailLearnMore" type="button">Cómo conectar el envío <span aria-hidden="true">→</span></button><button class="button button-primary" type="submit">Guardar preferencias</button></div>
+              </div>
+            </form>
+          </article>
+          <article class="panel data-panel">
+            <div><p class="panel-kicker">DATOS DE DEMOSTRACIÓN</p><h2>¿Quieres empezar de cero?</h2><p>Restablece los datos de muestra y borra los movimientos, mensajes importados y preferencias guardadas en este navegador.</p></div>
+            <button class="button button-danger-outline" id="resetDemo" type="button">Restablecer datos de ejemplo</button>
+          </article>
+        </div>
+      </section>
+
+      <footer class="app-footer"><span>saldo<span class="footer-dot">.</span> · Control simple de tus movimientos</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 16 5v4.4c0 3.7-2.5 6.5-6 8.1-3.5-1.6-6-4.4-6-8.1V5l6-2.5Z"/><path d="m7.4 9.8 1.7 1.7 3.6-3.7"/></svg> Tus datos se guardan en este navegador</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="modal-panel" id="modalPanel" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1"></section>
+  </div>
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>
